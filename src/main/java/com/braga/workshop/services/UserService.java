@@ -10,7 +10,9 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import com.braga.workshop.domain.Address;
 import com.braga.workshop.domain.User;
+import com.braga.workshop.repositories.AddressRepository;
 import com.braga.workshop.repositories.UserRepository;
 import com.braga.workshop.services.exceptions.DataBaseException;
 import com.braga.workshop.services.exceptions.ResourceNotFoundException;
@@ -22,6 +24,12 @@ public class UserService {
 	@Autowired
 	private UserRepository repository;
 	
+	@Autowired
+	private AddressService addressService;
+	
+	@Autowired
+	private AddressRepository addressRepository;
+	
 	public List<User> findAll(){
 		return repository.findAll();
 	}
@@ -31,7 +39,14 @@ public class UserService {
 		return obj.orElseThrow(() -> new ResourceNotFoundException(id));
 	}
 	
-	public User insert(User obj) {
+	public User insert(User obj) {	
+		String cep = obj.getAddress().getCep();
+		Address address = addressRepository.findById(cep).orElseGet(() ->{
+			Address newAddress = addressService.consultCep(cep);
+			addressRepository.save(newAddress);
+			return newAddress;
+		});
+		obj.setAddress(address);		
 		return repository.save(obj);
 	}
 	

@@ -40,17 +40,17 @@ public class User implements Serializable {
 	@ManyToOne
 	private Address address;
 
-	
 	public User() {
 		
 	}
 
-	public User(Long id, String name, String email, String phone, String password) {
+	public User(Long id, String name, String email, String phone, String password, Address address) {
 		this.id = id;
 		this.name = name;
 		this.email = email;
 		this.phone = phone;
 		this.password = password;
+		this.address = address;
 	}
 
 	public Long getId() {
@@ -93,7 +93,15 @@ public class User implements Serializable {
 		this.password = password;
 	}
 	
-	
+		
+	public Address getAddress() {
+		return address;
+	}
+
+	public void setAddress(Address address) {
+		this.address = address;
+	}
+
 	public List<Order> getOrders() {
 		return orders;
 	}
